@@ -5,7 +5,13 @@
         <div class="navbar-menu">
             <ul class="menu-nav ">
             <li class="menu-list">
-                <router-link class="menu-link" to="/category">Главная</router-link>        
+                <router-link class="menu-link" to="/category">Главная</router-link>     
+            </li> 
+            <li class="menu-list">
+                <router-link class="menu-link" to="/page-users">Кабинет пользователя</router-link>      
+            </li> 
+            <li class="menu-list">
+                <router-link class="menu-link" to="/page-masters">Кабинет мастера</router-link>      
             </li> 
             <li class="menu-list">
                 <a class="menu-link" href="#" @click="logout">Выйти</a>        
