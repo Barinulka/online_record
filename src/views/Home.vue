@@ -4,7 +4,8 @@
       <router-link to="/details/3">Master's details</router-link> |
       <router-link to="/details/1">Master's details</router-link> |
       <router-link to="/page-users">Page Users</router-link> |
-      <router-link to="/page-masters"> Page Masters</router-link> 
+      <router-link to="/page-masters"> Page Masters</router-link> |
+      <router-link to="/login"> Login </router-link>
     </div>
 </template>
 
