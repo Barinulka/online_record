@@ -25,7 +25,7 @@
                 <div class="photo col-sm-12 col-lg-4 ">
                     <img :src="photo_url" alt="user" class="img-circle">
                 </div>
-                <div class="profile col-sm-12 col-lg-8 " >
+                <div class="profile col-sm-12 col-lg-8 ">
                     <div class="profile-info">
                         <div v-if="errored" class="alert alert-primary" role="alert">
                             Невозможно загрузить данные из-за неизвестной ошибки!
@@ -33,9 +33,8 @@
                         <h1 >{{ fullname }}</h1>
                         <p><strong>Почта: </strong> {{userDetail.email}} </p>
                         <p><strong>Телефон: </strong> {{userDetail.phone}} </p>
-                        <p><strong>Город: </strong> {{ getCity }} </p>
                     </div>
-                </div>                                   
+                </div>                                  
             </div>
         </div>
         <div class="record">
@@ -43,16 +42,18 @@
         </div>  
         <div class="frame-1">
             <div class="table-responsive-lg">
-                <table class="table table-hover" >
+                <table class="table table-hover">
                     <thead>
                         <tr>
-                            <th>Вид услуги</th>
+                            <th>#</th>
                             <th>Специалист</th>
-                            <th>Комментарий</th>
+                            <th>ФИО</th>
+                            <th>Вид услуги</th>
+                            <th>Время</th>
                             <th>Дата</th>
                         </tr>
                     </thead>
-                    <tbody v-for="item in order" :key="item.id">
+                    <tbody>
                         <tr>
                             <td >{{ item.job_title }}</td>
                             <td>{{ item.firstname }} {{ item.lastname }}</td>
@@ -89,9 +90,8 @@
 <script>
 export default {
     data: () => ({
-        // orderInfo: null,
+        userInfo: null,
         userDetail: null,
-        orderDetail: null,
         loaded: false,
         photo_url: "https://bootdey.com/img/Content/avatar/avatar6.png",
         city: [],
@@ -102,12 +102,6 @@ export default {
         orderError: false,
         errored: false
     }),
-    methods: {
-        getJSON (url) {
-            return fetch(url)
-            .then(d => d.json())
-        },
-    },
     async mounted() {
         this.userDetail = await fetch("/api/profile")
             .then(d => d.json())
@@ -143,6 +137,8 @@ export default {
                 console.log(error)
                 this.orderError = true
             });
+        this.loaded = true;
+
     },
     computed:{
         fullname: {
@@ -167,6 +163,5 @@ export default {
         },
         
     },
-    
 }
 </script>

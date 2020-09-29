@@ -30,7 +30,6 @@
                         <h1 >{{ fullname }}</h1>
                         <p>{{ masterDetail.birthdate }} </p>
                         <p>{{ masterDetail.info }} </p>
-                        <p><strong>Город: </strong> {{ getCity }} </p>
                     </div>
                 </div>                                  
             </div>
@@ -66,32 +65,11 @@ export default {
     data: () => ({
         masterDetail: null,
         loaded: false,
-        photo_url: "https://bootdey.com/img/Content/avatar/avatar6.png",
-        city: [],
-        order: [],
-        urlAPIcity: '/api/citys',
-        urlAPIorder: '/api/order'
+        photo_url: "https://bootdey.com/img/Content/avatar/avatar6.png"
     }),
-    methods: {
-        getJSON (url) {
-            return fetch(url)
-            .then(d => d.json())
-        }
-    },
     async mounted() {
         this.masterDetail = await fetch("/api/profile").then(d => d.json());
         this.loaded = true;
-        this.getJSON(this.urlAPIcity)
-            .then(data => {
-                // console.log(data)
-                this.city = data
-                // console.log(this.city)
-            });
-        this.getJSON(this.urlAPIorder)
-            .then(data => {
-                // console.log(data)
-                this.order = data
-            });
     },
     computed:{
         fullname: {
@@ -103,17 +81,7 @@ export default {
                 this.masterDetail.firstname = names[0]
                 this.masterDetail.lastname = names[names.length - 1]
             }
-        },
-        getCity: function () {
-            for(let index = 0; index < this.city.length; index++) {
-                for(let item = 0; item < index; item++) {
-                    if(item == this.masterDetail.city_id){
-                        // console.log(this.city[item - 1].city);
-                        return this.city[item - 1].city;
-                    }
-                }
-            }
-        },
-    },
+        }
+    }
 }
 </script>

@@ -17,29 +17,20 @@
       <div class="frame">
         <div v-if="loaded" class="row">
           <div class="photo col-sm-12 col-lg-4 ">
-              <img :src="photo_url || masterDetail.photo" alt="user" class="img-circle">
+              <img :src="photo_url" alt="user" class="img-circle">
           </div>
           <div class="profile col-sm-12 col-lg-8 ">
             <div class="profile-info">
-              <h1>{{masterDetail.firstname}} {{masterDetail.lastname}}</h1>
+              <h1>{{masterDetail.firstname}}</h1>
               <p><strong>Обо мне: </strong>{{masterDetail.info}}</p>
               <p><strong>Телефон: </strong>{{masterDetail.phone}}</p>
               <p><strong>Почта: </strong>{{masterDetail.email}}</p>
-              <p><strong>Возраст: </strong>{{masterDetail.age}} лет</p>
-              <p><strong>Образование: </strong>{{masterDetail.education}}</p>
-              <p><strong>Опыт работы: </strong>{{masterDetail.experience}} лет</p>
-              <p><strong>Цены: </strong>{{masterDetail.price}}</p>
-              <p><strong>Город: </strong>{{masterDetail.city}}</p>
-              <p><strong>Профессии: </strong></p>
-              <ul>
-                <li v-for="(job,index) in masterDetail.jobs" :key="index">{{job}}</li>
-              </ul>
             </div>
           </div>                                  
         </div>
       </div>
       <form class="d-flex justify-content-center p-5">
-        <input type="datetime-local" class="mr-5">
+        <input type="datetime-local" class="mr-5" id="data-log">
         <button type="submit" class="btn btn-primary btn-lg">Записаться</button>
       </form>
     </main>
@@ -64,18 +55,13 @@ export default {
   data: () => ({
     masterDetail: null,
     loaded: false,
-    photo_url: "https://www.bootdey.com/app/webroot/img/default-avatar.png"
+    photo_url: "https://bootdey.com/img/Content/avatar/avatar6.png",
+    data: []
   }),
-  mounted() {
+  async mounted() {
     const id = this.$route.params.id;
-    this.getDetails(id);
-  },
-  methods: {
-    async getDetails(id) {
-      this.masterDetail = await fetch("/api/master/" + id).then(d => d.json());
-      console.log(this.masterDetail.photo)
-      this.loaded = true;
-    }
+    this.masterDetail = await fetch("/api/master/" + id).then(d => d.json());
+    this.loaded = true;
   }
 }
 </script>

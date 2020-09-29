@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import home from '../views/Home.vue'
 import details from '../views/MasterDetails.vue'
 import category from '../views/category.vue'
 import login from '../views/login.vue'
@@ -13,18 +12,13 @@ Vue.use(VueRouter)
   const routes = [
   {
     path: "/",
-    name: "home",
-    component: home, 
+    name: "login",
+    component: login, 
   },
   {
     path: '/category',
     name: 'category',
-    component: category
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: login
+    component: category,
   },
   {
     path: '/register',
@@ -52,18 +46,6 @@ const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
   routes
-})
-
-router.beforeEach((to, from, next) => {
-  if(to.matched.some(record => record.meta.requiresAuth)) {
-    if (store.getters.isLoggedIn) {
-      next()
-      return
-    }
-    next('/login') 
-  } else {
-    next() 
-  }
 })
 
 export default router

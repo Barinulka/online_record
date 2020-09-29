@@ -5,10 +5,10 @@
         <div class="navbar-menu">
             <ul class="menu-nav ">
             <li class="menu-list">
-                <router-link class="menu-link" to="/">Главная</router-link>        
+                <router-link class="menu-link" to="/category">Главная</router-link>        
             </li> 
             <li class="menu-list">
-                <a class="menu-link" href="#">Войти</a>        
+                <a class="menu-link" href="#" @click="logout">Выйти</a>        
             </li>  
             </ul>
         </div>
@@ -21,7 +21,7 @@
             </details>
         </div>
         <div class="specialists">
-            <div class="specialists-card d-flex justify-content-between" v-for="item in master">
+            <div class="specialists-card d-flex justify-content-between" v-for="item in master" :id="item.id" @click="details">
                 <div class="image">
                     <span id="master_info">{{ item.info }}</span> <span id="master_price">{{ item.price }}</span>
                     <div id="card">
@@ -46,6 +46,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     data() {
         return {
@@ -61,6 +62,15 @@ export default {
         getJSON (url) {
             return fetch(url)
             .then(d => d.json())
+        },
+        logout: function() {
+            return fetch('/api/logout')
+                .then(() => this.$router.push('/'))
+                .catch(err => console.log(err))
+        },
+        details: function() {
+            let id = document.querySelector(".specialists-card").getAttribute("id");
+            console.log(id)
         }
     },
     mounted() {

@@ -3,61 +3,39 @@
       <div class="login">
         <form action="#">
             <span class="login-title">Авторизация</span>
-            <label for="">
-                <input type="text" v-model="email" placeholder="Email" class="login-log">
+            <label>
+                <input required type="text" v-model="email" placeholder="Email" class="login-log">
             </label>
-            <label for="">
-                <input type="password" v-model="password" placeholder="Пароль" class="login-password">
+            <label>
+                <input required type="password" v-model="pwd" placeholder="Пароль" class="login-password">
             </label>
-            <div id="login-error"></div>
             <a href="#" class="login-In" @click="login">Войти</a>
         </form>
       </div>
+      <div class="login-reg">Ещё не зарегистрированы?<router-link to="/register" id="title-reg"> Регистрация</router-link></div>
   </div>
 </template>
 
 <script>
+import axios from 'axios'
 export default {
     data(){
       return {
-        email: "",
-        password: "",
-        user: {}
+        email: '',
+        pwd: ''
       }
     },
     methods: {
-    //   login: function () {
-    //     let email = this.email 
-    //     let password = this.password
-    //     this.$store.dispatch('login', { email, pwd: password })
-    //    .then(() => this.$router.push('/'))
-    //    .catch(err => console.log(err))
-    //   }
-        async login() {
-            let credentials = {
-                email: this.email,
-                pwd: this.password
-            };
-            await fetch("/api/login",
-            {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json;charset=utf-8'
-                },
-                body: JSON.stringify(credentials)
-            })
-            .then(d => d.json())
-            .then(() => {
-                this.getUserData();
-                this.$router.push('/');
-            })
-            .catch(err => console.log(err));
-        },
-        async getUserData() {
-            this.user = await fetch("/api/profile")
-            .then(d => d.json())
-            .catch(err => console.log(err));
+      login: function () {
+        let data = {
+            email: this.email,
+            pwd: this.pwd
         }
+        axios
+            .post('/api/login', data)
+            .then(() => this.$router.push('/category'))
+            .catch(err => console.log(err))
+      }
     }
 }
 </script>
@@ -70,6 +48,7 @@ export default {
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
     }
     .login {
         width: 400px;
@@ -129,5 +108,23 @@ export default {
     }
     .login-In:active {
         background: #8D92C5;
+    }
+    .login-reg {
+        width: 400px;
+        height: 50px;
+        background: #FFFFFF;
+        box-shadow: 0px 30px 50px rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        margin-top: 30px;
+        padding: 15px;
+        font-family: Abel;
+        font-style: normal;
+        font-weight: normal;
+        font-size: 14px;
+        line-height: 18px;
+        color: #28313A;
+    }
+    #title-reg {
+        color: #5C63AB;
     }
 </style>
