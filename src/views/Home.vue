@@ -4,7 +4,6 @@
       <router-link to="/details/1">Master's details</router-link> |
       <router-link to="/page-users">Page Users</router-link> |
       <router-link to="/page-masters"> Page Masters</router-link> |
-      <router-link to="/login"> Login </router-link>
       <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span> 
     </div>
 </template>
