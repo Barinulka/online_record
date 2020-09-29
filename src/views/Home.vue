@@ -7,7 +7,11 @@
       <router-link to="/details/1">Master's details</router-link> |
       <router-link to="/page-users">Page Users</router-link> |
       <router-link to="/page-masters"> Page Masters</router-link> |
+<<<<<<< HEAD
+      <router-link to="/login"> Login </router-link>
+=======
       <span v-if="isLoggedIn"> | <a @click="logout">Logout</a></span> 
+>>>>>>> 9678d552a4f9c4a1e25ec860a4695198948b62ca
     </div>
 </template>
 
