@@ -22,7 +22,7 @@
                     <img :src="photo_url" alt="user" class="img-circle">
                 </div>
                 <div class="profile col-sm-12 col-lg-8 " >
-                    <div class="profile-info">
+                    <div class="profile-info" v-if="!editing">
                         <div v-if="errored" class="alert alert-primary" role="alert">
                             Невозможно загрузить данные из-за неизвестной ошибки!
                         </div>
@@ -30,6 +30,16 @@
                         <p><strong>Почта: </strong> {{userDetail.email}} </p>
                         <p><strong>Телефон: </strong> {{userDetail.phone}} </p>
                         <p><strong>Город: </strong> {{ getCity }} </p>
+                        <div>
+                            <a href="#" class="edit" @click="editEnter(userDetail)">Редактировать</a>
+                        </div>
+                    </div>
+                    <div class="profile-info" v-if="editing">
+                        <input class="input" type="text" v-model="userDetail.firstname" required placeholder="Имя">
+                        <input class="input" type="text" v-model="userDetail.lastname" required placeholder="Фамилия">
+                        <input class="input" type="text" v-model="userDetail.city_id" required placeholder="id города">
+                        <button class="save-In" @click="editSave(userDetail)">OK</button>
+                        <button class="save-In" @click="editCancel(userDetail)">Отмена</button>
                     </div>
                 </div>                                   
             </div>
@@ -48,14 +58,15 @@
                             <th>Дата</th>
                         </tr>
                     </thead>
-                    <tbody v-for="item in order" :key="item.id">
+                    <tbody v-for="item in order" :key="item.id" :id="item.id" >
                         <tr>
                             <td >{{ item.job_title }}</td>
-                            <td>{{ item.firstname }} {{ item.lastname }}</td>
-                            <td>{{ item.comment }}</td>
-                            <td>{{ item.job_date }}</td>
-                        </tr>         
+                            <td >{{ item.firstname }} {{ item.lastname }}</td>
+                            <td >{{ item.comment }}</td>
+                            <td >{{ item.job_date }}</td>
+                        </tr>                     
                     </tbody>
+                    
                 </table>
                 <div v-if="orderError" class="alert alert-primary" role="alert">
                     Невозможно загрузить данные из-за неизвестной ошибки!
@@ -81,19 +92,24 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
     data: () => ({
         // orderInfo: null,
         userDetail: null,
-        orderDetail: [],
+        orderDetail: null,
         loaded: false,
+        editing: false,
         photo_url: "https://bootdey.com/img/Content/avatar/avatar6.png",
         city: [],
         order: [],
         urlAPIcity: '/api/citys',
         urlAPIorder: '/api/order',
         orderError: false,
-        errored: false
+        errored: false,
+        oldFirstname: '',
+        oldLastname: '',
+        oldCity_id: null
     }),
     methods: {
         getJSON (url) {
@@ -104,7 +120,31 @@ export default {
             return fetch('/api/logout')
                 .then(() => this.$router.push('/'))
                 .catch(err => console.log(err))
+        }, 
+        editEnter (userDetail) {
+            this.oldFirstname = userDetail.firstname;
+            this.oldLastname = userDetail.lastname;
+            this.oldCity_id = userDetail.city_id;
+            this.editing = true;
         },
+        editCancel (userDetail) {
+            userDetail.firstname = this.oldFirstname;
+            userDetail.lastname = this.oldLastname; 
+            userDetail.city_id = this.oldCity_id;
+            this.editing = false;
+        }, 
+        editSave (userDetail) {
+            let data = {
+                firstname: userDetail.firstname,
+                lastname: userDetail.lastname,
+                city_id: userDetail.city_id
+            }
+            Axios
+                .post('/api/profile/userupdate', data)
+                .catch(err => console.log(err))
+            this.editing = false;
+        }
+        
     },
     async mounted() {
         this.userDetail = await fetch("/api/profile")
@@ -112,15 +152,11 @@ export default {
             .catch(error => {
                 console.log(error)
                 this.errored = true
-            });
+            })
         // console.log(this.userDetail.firstname)
 
-        this.orderDetail = await fetch("/api/order")
-            .then(d => d.json())
-            console.log(this.orderDetail)
-
         this.loaded = true;
-        
+                
         this.getJSON(this.urlAPIcity)
             .then(data => {
                 // console.log(data)
@@ -142,10 +178,8 @@ export default {
                 this.orderError = true
             });
 
-        // const response = await fetch("/api/order");
-        // const data = await response.json();
-        // this.orderDetail = data.id;
-        // console.log(data[2].id)
+       
+    
     },
     computed:{
         fullname: {
@@ -172,3 +206,60 @@ export default {
     
 }
 </script>
+<style scoped>
+.input {
+    display: block;
+      margin-top: 20px;
+      padding-left: 10px;
+      width: 300px;
+      height: 40px;
+      border: 1px solid #ABAFBF;
+      box-sizing: border-box;
+      border-radius: 10px;
+      outline: none;
+      
+    }
+    
+    .save-In {
+      display: block;
+      text-decoration: none;
+      margin-top: 15px;
+      margin-left: 0px;
+      /* padding-top: 10px; */
+      width: 300px;
+      height: 40px;
+      background: #8D92C5;
+      border-radius: 10px;
+      color: #ffffff;
+      align-items: center;
+      justify-content: center;
+    }
+    .save-In:hover {
+        color: #ffffff;
+        background-color:  #6d72b1;
+        text-decoration: none;
+    }
+    .save-In:active {
+        background: #8D92C5;
+    }
+    .edit {
+      display: block;
+      text-decoration: none;
+      margin-top: 15px;
+      /* margin-left: 50px; */
+      /* padding-top: 10px; */
+      width: 300px;
+      height: 40px;
+      background: #8D92C5;
+      border-radius: 10px;
+      color: #ffffff;
+    }
+    .edit:hover {
+        color: #ffffff;
+        background-color:  #6d72b1;
+        text-decoration: none;
+    }
+    .edit:active {
+        background: #8D92C5;
+    }
+</style>

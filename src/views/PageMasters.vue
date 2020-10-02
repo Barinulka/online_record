@@ -22,14 +22,32 @@
                     <img :src="photo_url" alt="user" class="img-circle">
                 </div>
                 <div class="profile col-sm-12 col-lg-8 ">
-                    <div class="profile-info">
+                    <div class="profile-info" v-if="!editing">
                         <div v-if="errored" class="alert alert-primary" role="alert">
                             Невозможно загрузить данные из-за неизвестной ошибки!
                         </div>
                         <h1 >{{ fullname }}</h1>
                         <p>{{ masterDetail.birthdate }} </p>
-                        <p>{{ masterDetail.info }} </p>
+                        <p><strong>Возраст: </strong>{{ masterDetail.age }} </p>
+                        <p><strong>Обо мне: </strong>{{ masterDetail.info }} </p>
+                        <!-- <p><strong>Мои профессии: </strong><ul v-for="item in masterDetail.jobs"> <li>{{ item }}</li> </ul> -->
+                        <p><strong>Опыт работы: </strong> {{ masterDetail.experience }} </p>
                         <p><strong>Город: </strong> {{ getCity }} </p>
+                        <div>
+                            <a href="#" class="edit" @click="editEnter(masterDetail)">Редактировать</a>
+                        </div>
+                    </div>
+                    <div class="profile-info" v-if="editing">
+                        <input class="input" type="text" v-model="masterDetail.firstname" required placeholder="Имя">
+                        <input class="input" type="text" v-model="masterDetail.lastname" required placeholder="Фамилия">
+                        <input class="input" type="text" v-model="masterDetail.birthdate" required placeholder="Дата рождения">
+                        <input class="input" type="text" v-model="masterDetail.city_id" required placeholder="id города">
+                        <input class="input" type="text" v-model="masterDetail.education_id" required placeholder="Образование">
+                        <input class="input" type="text" v-model="masterDetail.experience" required placeholder="Опыт">
+                        <input class="input" type="text" v-model="masterDetail.price" required placeholder="Цены">
+                        <input class="input" type="text" v-model="masterDetail.info" required placeholder="Инфо">
+                        <button class="save-In" @click="editSave(masterDetail)">OK</button>
+                        <button class="save-In" @click="editCancel(masterDetail)">Отмена</button>
                     </div>
                 </div>                                  
             </div>
@@ -79,6 +97,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
 export default {
     data: () => ({
         masterDetail: null,
@@ -89,7 +108,16 @@ export default {
         urlAPIcity: '/api/citys',
         urlAPIorder: '/api/order',
         orderError: false,
-        errored: false
+        errored: false,
+        editing: false,
+        oldFirstname: '',
+        oldLastname: '',
+        oldBirthdate: null,
+        oldCity_id: null,
+        oldEducation_id: null,
+        oldExperience: null,
+        oldPrice: null,
+        oldInfo: null
     }),
     methods: {
         getJSON (url) {
@@ -101,6 +129,44 @@ export default {
                 .then(() => this.$router.push('/'))
                 .catch(err => console.log(err))
         },
+        editEnter (masterDetail) {
+            this.oldFirstname = masterDetail.firstname;
+            this.oldLastname = masterDetail.lastname;            
+            this.oldBirthdate = masterDetail.birthdate;
+            this.oldCity_id = masterDetail.city_id;
+            this.oldEducation_id = masterDetail.education_id;
+            this.oldExperience = masterDetail.experience;
+            this.oldPrice = masterDetail.price;
+            this.oldInfo = masterDetail.info,
+            this.editing = true;
+        },
+        editCancel (masterDetail) {
+            masterDetail.firstname = this.oldFirstname;
+            masterDetail.lastname = this.oldLastname;
+            masterDetail.birthdate = this.oldBirthdate ;
+            masterDetail.city_id = this.oldCity_id;
+            masterDetail.education_id = this.oldEducation_id;
+            masterDetail.experience = this.oldExperience;
+            masterDetail.price = this.oldPrice;
+            masterDetail.info = this.oldInfo,     
+            this.editing = false;
+        }, 
+        editSave (masterDetail) {
+            let data = {
+                firstname: masterDetail.firstname,
+                lastname: masterDetail.lastname,
+                birthdate: masterDetail.birthdate,
+                city_id: masterDetail.city_id ,
+                education_id: masterDetail.education_id ,
+                experience: masterDetail.experience,
+                price: masterDetail.price,
+                info: masterDetail.info
+            }
+            Axios
+                .post('/api/profile/masterupdate', data)
+                .catch(err => console.log(err))
+            this.editing = false;
+        }
     },
     async mounted() {
         this.masterDetail = await fetch("/api/profile")
@@ -162,3 +228,60 @@ export default {
     }
 }
 </script>
+<style scoped>
+.input {
+    display: block;
+      margin-top: 20px;
+      padding-left: 10px;
+      width: 300px;
+      height: 40px;
+      border: 1px solid #ABAFBF;
+      box-sizing: border-box;
+      border-radius: 10px;
+      outline: none;
+      
+    }
+    
+    .save-In {
+      display: block;
+      text-decoration: none;
+      margin-top: 15px;
+      margin-left: 0px;
+      /* padding-top: 10px; */
+      width: 300px;
+      height: 40px;
+      background: #8D92C5;
+      border-radius: 10px;
+      color: #ffffff;
+      align-items: center;
+      justify-content: center;
+    }
+    .save-In:hover {
+        color: #ffffff;
+        background-color:  #6d72b1;
+        text-decoration: none;
+    }
+    .save-In:active {
+        background: #8D92C5;
+    }
+    .edit {
+      display: block;
+      text-decoration: none;
+      margin-top: 15px;
+      /* margin-left: 50px; */
+      /* padding-top: 10px; */
+      width: 300px;
+      height: 40px;
+      background: #8D92C5;
+      border-radius: 10px;
+      color: #ffffff;
+    }
+    .edit:hover {
+        color: #ffffff;
+        background-color:  #6d72b1;
+        text-decoration: none;
+    }
+    .edit:active {
+        background: #8D92C5;
+    }
+</style>
